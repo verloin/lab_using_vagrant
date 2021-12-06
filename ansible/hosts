@@ -1,0 +1,8 @@
+[nodes]
+node01 ansible_host=10.0.0.111 ansible_user=root ansible_ssh_private_key_file=/root/.ssh/id_rsa_ansible
+node02 ansible_host=10.0.0.112 ansible_user=root ansible_ssh_private_key_file=/root/.ssh/id_rsa_ansible
+node03 ansible_host=10.0.0.113 ansible_user=root ansible_ssh_private_key_file=/root/.ssh/id_rsa_ansible
+
+[servers]
+docker ansible_host=10.0.0.104 ansible_user=root ansible_ssh_private_key_file=/root/.ssh/id_rsa_ansible
+gitlab ansible_host=10.0.0.106 ansible_user=root ansible_ssh_private_key_file=/root/.ssh/id_rsa_ansible

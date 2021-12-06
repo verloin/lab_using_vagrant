@@ -1,0 +1,42 @@
+
+
+
+#   sudo apt install ca-certificates curl openssh-server -y
+#   cd /tmp
+#   sudo curl -LO https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh
+#   sudo bash /tmp/script.deb.sh
+#   sudo apt install gitlab-ce -y
+#   sudo gitlab-ctl reconfigure
+# SHELL
+
+---
+- hosts: gitlab
+  become: true
+  tasks:
+    - name: install dipendenses
+      apt:
+        name: "{{item}}"
+        state: present
+        update_cache: yes
+      loop:
+        - ca-certificates
+        - curl
+        - openssh-server
+        - lsb-release
+        - perl
+
+    - name: add repository gitlab
+        apt_repository:
+          repo: https://packages.gitlab.com/install/repositories/gitlab/gitlab-ee/script.deb.sh
+          state: present
+
+    - name: install docker
+        apt:
+          name: gitlab-ce
+          state: latest
+
+  handlers:
+    - name: restart docker
+      service: 
+        name: docker 
+        state: restarted
