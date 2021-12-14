@@ -1,0 +1,12 @@
+- name: Add some entries to file hosts
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ item.line }}"
+  with_items:
+    - { line: '10.0.0.100 ansible' }
+    - { line: '10.0.0.104 docker' }
+    - { line: '10.0.0.105 ubuntu' }
+    - { line: '10.0.0.106 gitlab' }
+    - { line: '10.0.0.111 node01' }
+    - { line: '10.0.0.112 node02' }
+    - { line: '10.0.0.113 node03' }

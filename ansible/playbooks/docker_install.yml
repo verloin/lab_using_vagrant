@@ -6,7 +6,7 @@
   become: true
 
   tasks:
-    - name: install dipendenses
+    - name: install dependenses
       apt:
         name: "{{item}}"
         state: present
@@ -25,7 +25,7 @@
         url: https://download.docker.com/linux/debian/gpg
         state: present
 
-    - name: add repository docker
+    - name: Add repository Docker
       apt_repository:
         repo: deb https://download.docker.com/linux/debian buster stable
         state: present
