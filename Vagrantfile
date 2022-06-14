@@ -26,6 +26,7 @@ $base_script = <<-SHELL
   sudo apt update && apt upgrade -y
   sudo apt install mc -y
   sudo apt install sysstat -y
+  sudo apt install curl -y
   sudo mkdir /root/.ssh
   sudo touch /root/.ssh/authorized_keys
 
@@ -37,6 +38,15 @@ $base_script = <<-SHELL
   sudo echo "alias l='ls $LS_OPTIONS -lA'" >> /root/.bashrc
   sudo echo "alias ls='ls --color=auto'" >> /root/.bashrc
 SHELL
+
+# $gitlab_runner = <<-SHELL
+#   sudo mkdir -p /var/www/portal/
+#   sudo chown -R gitlab-runner:root /var/www/portal/
+#   sudo curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh" | sudo bash
+#   sudo apt-get install gitlab-runner
+#   sudo usermod -aG root gitlab-runner
+#   sudo echo "10.0.0.106 gitlab gitlab.example.com" >> /etc/hosts
+# SHELL
 
 ######################################################################
 
@@ -65,7 +75,6 @@ Vagrant.configure("2") do |config|
     sub.vm.box = "#{BOX_DEBIAN}"
     sub.vm.hostname = "zabbix"
     sub.vm.network "private_network", ip: "10.0.0.101"
-
     sub.vm.provision "shell", inline: $base_script, run: "once"
   
     sub.vm.provider "virtualbox" do |vb|
@@ -125,6 +134,27 @@ Vagrant.configure("2") do |config|
     end
   end
 
+  ########################################################################
+  config.vm.define "ubuntu-2004" do |sub|
+    sub.vm.box = "#{BOX_UBUNTU_DESKTOP}"
+    sub.vm.hostname = "ubuntu-2004"
+    sub.vm.network "private_network", ip: "10.0.0.130"
+
+    # sub.vm.provision "Copying folder with configuration files to VM", type: "file", run: "once" do |vb|
+    #   vb.source = Dir.pwd + "/"
+    #   vb.destination = "/tmp/ubuntu"
+    # end
+
+    sub.vm.provision "shell", inline: $ubuntu_base, run: "once"
+    # sub.vm.provision "shell", inline: $ubuntu_ansible, run: "once"
+  
+    sub.vm.provider "virtualbox" do |vb|
+      vb.name = "ubuntu-2004"
+      vb.memory = 8192
+      vb.cpus = 2
+    end
+  end
+
   ###############################################################
   config.vm.define "gitlab" do |sub|
     sub.vm.box = "#{BOX_DEBIAN}"
@@ -167,6 +197,7 @@ $ubuntu_base = <<-SHELL
   sudo apt install sysstat -y
   sudo apt-get install virtualbox-guest-x11
   sudo apt install snapd
+  sudo apt install curl -y
   sudo snap install pycharm-community --classic
 
   sudo useradd -G sudo -m -p p@ssw0rd -s /bin/bash yury
